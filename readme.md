@@ -169,12 +169,6 @@ This project follows the **CRISP-DM** (Cross-Industry Standard Process for Data 
 - **MongoDB**: Flexible schema, powerful aggregations, JSON-friendly
 - **Cosine Similarity**: Measures semantic meaning, not text length
 
-### Data Handling
-
-- **Missing Values**: Added boolean flags (`has_lpa_number`) instead of dropping columns
-- **Type Conversion**: Proper dtypes (datetime, float, category) for efficiency
-- **Indexing**: Strategic indexes on frequently queried fields
-
 ---
 
 ## 📈 Performance

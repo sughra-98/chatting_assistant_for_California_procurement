@@ -1,3 +1,8 @@
+{/* MessageBubble.jsx
+  this component renders individual message bubbles in the chat,
+  differentiating between user and assistant messages,
+  and displaying any associated data.
+  */}
 import React from 'react';
 import './MessageBubble.css';
 
@@ -26,9 +31,11 @@ function MessageBubble({ message }) {
           </div>
         )}
 
-        <div className="message-timestamp">
-          {message.timestamp?.toLocaleTimeString() || ''}
-        </div>
+<div className="message-timestamp">
+  {message.timestamp
+    ? new Date(message.timestamp).toLocaleTimeString()
+    : ''}
+</div>
       </div>
     </div>
   );

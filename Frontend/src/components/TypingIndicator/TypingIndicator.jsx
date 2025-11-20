@@ -1,3 +1,7 @@
+{/* TypingIndicator.jsx
+  this component renders a typing indicator for the assistant
+  when it is generating a response.
+  */}
 import React from 'react';
 import './TypingIndicator.css';
 

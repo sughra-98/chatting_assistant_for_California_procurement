@@ -2,6 +2,7 @@ import React from 'react';
 import './InputArea.css';
 
 function InputArea({ input, setInput, onSubmit, loading }) {
+  // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
     if (input.trim() && !loading) {

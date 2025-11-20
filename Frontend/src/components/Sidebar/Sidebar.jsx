@@ -1,18 +1,25 @@
+{/* Sidebar.jsx 
+  this component renders the sidebar for chat sessions, including
+  new chat button, chat history, and footer info. 
+*/} 
+  
+  
+
 import React, { useState } from 'react';
 import './Sidebar.css';
 
-function Sidebar({ 
-  chatSessions, 
-  currentSessionId, 
-  onSelectSession, 
-  onNewChat,
-  onDeleteSession,
-  isOpen,
-  onToggle 
-}) {
+function Sidebar({ chatSessions, 
+                currentSessionId, 
+                onSelectSession, 
+                onNewChat,
+                onDeleteSession,
+                 }) 
+  {
+  {/* State to track hovered chat item for showing delete button */}
   const [hoveredId, setHoveredId] = useState(null);
 
   const formatDate = (date) => {
+    {/* Format date to show relative time */}
     const now = new Date();
     const chatDate = new Date(date);
     const diffTime = Math.abs(now - chatDate);
@@ -33,7 +40,9 @@ function Sidebar({
     // Get first user message or use default
     const firstUserMessage = session.messages.find(m => m.role === 'user');
     if (firstUserMessage) {
+      // Truncate title if too long
       return firstUserMessage.content.slice(0, 50) + 
+
              (firstUserMessage.content.length > 50 ? '...' : '');
     }
     return 'New Chat';
@@ -41,13 +50,10 @@ function Sidebar({
 
   return (
     <>
-      {/* Mobile Toggle Button */}
-      <button className="sidebar-toggle" onClick={onToggle}>
-        {isOpen ? '✕' : '☰'}
-      </button>
+      
 
       {/* Sidebar */}
-      <div className={`sidebar ${isOpen ? 'open' : ''}`}>
+      <div className='sidebar open'>
         {/* New Chat Button */}
         <button className="new-chat-button" onClick={onNewChat}>
           <span className="button-icon">➕</span>
@@ -69,7 +75,9 @@ function Sidebar({
                   key={session.id}
                   className={`chat-item ${currentSessionId === session.id ? 'active' : ''}`}
                   onClick={() => onSelectSession(session.id)}
+                  // on mouse enter, set hoveredId
                   onMouseEnter={() => setHoveredId(session.id)}
+                  // on mouse leave, clear hoveredId
                   onMouseLeave={() => setHoveredId(null)}
                 >
                   <div className="chat-item-content">
@@ -109,8 +117,6 @@ function Sidebar({
         </div>
       </div>
 
-      {/* Overlay for mobile */}
-      {isOpen && <div className="sidebar-overlay" onClick={onToggle} />}
     </>
   );
 }

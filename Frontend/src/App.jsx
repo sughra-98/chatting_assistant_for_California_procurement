@@ -9,12 +9,12 @@ import './App.css';
 import Body from './components/Body/Body';
 
 function App() {
+  // State management
   const [chatSessions, setChatSessions] = useState([]);
   const [currentSessionId, setCurrentSessionId] = useState(null);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [stats, setStats] = useState(null);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const exampleQuestions = [
     "How many purchases in 2014?",
@@ -73,12 +73,10 @@ function App() {
 
     setChatSessions(prev => [newSession, ...prev]);
     setCurrentSessionId(newSession.id);
-    setSidebarOpen(false); // Close sidebar on mobile after creating new chat
   };
 
   const selectSession = (sessionId) => {
     setCurrentSessionId(sessionId);
-    setSidebarOpen(false); // Close sidebar on mobile after selecting
   };
 
   const deleteSession = (sessionId) => {
@@ -177,8 +175,6 @@ function App() {
         onSelectSession={selectSession}
         onNewChat={createNewChat}
         onDeleteSession={deleteSession}
-        isOpen={sidebarOpen}
-        onToggle={() => setSidebarOpen(!sidebarOpen)}
       />
       
       <div className="main-content">

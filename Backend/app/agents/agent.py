@@ -155,7 +155,6 @@ BEGIN QUERY
 
 Question: {{input}}
 
-{{agent_scratchpad}}
 """
 
 

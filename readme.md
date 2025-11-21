@@ -1,215 +1,471 @@
-# 🤖 Agentic RAG System for California Procurement Data
-
-An intelligent chatbot that combines **vector search** and **database queries** to answer natural language questions about California state procurement data.
+# 🏛️ California Procurement Assistant
 
 
----
-
-## 📋 Overview
-
-This project implements an **Agentic RAG (Retrieval-Augmented Generation)** system that intelligently answers questions about 346,000+ California state purchase records by:
-
-- 🔍 **Searching documents** (PDF/DOCX) for definitions and explanations
-- 📊 **Querying MongoDB** for statistics and data analysis
-- 🧠 **Automatically deciding** which approach to use based on the question
-
-### Example Queries
-
-```
-Q: "What is an LPA Number?"
-→ Searches documents, explains: "LPA stands for Leveraged Procurement Agreement..."
-
-Q: "How many purchases used LPA contracts?"
-→ Queries database, returns: "92,347 purchases"
-
-Q: "Explain acquisition types and show spending per type"
-→ Uses BOTH: Explains types + provides spending breakdown
-```
+An intelligent AI-powered chatbot that provides natural language access to **346,000+ California state procurement records**. Built with a modern full-stack architecture using **FastAPI**, **React**, **LangChain agents**, and **Google Gemini AI**.
 
 ---
 
-## 🎯 Key Features
+## 📋 Table of Contents
 
-✅ **Natural Language Interface** - Ask questions in plain English  
-✅ **Multi-Source Intelligence** - Combines document knowledge + database facts  
-✅ **Smart Tool Selection** - Agent decides which tool to use automatically  
-✅ **Production Ready** - Error handling, type safety, optimized queries  
-✅ **Extensible** - Easy to add new tools and capabilities  
+- [Overview](#overview)
+- [Features](#features)
+- [Architecture](#architecture)
+- [Technology Stack](#technology-stack)
+- [Dataset](#dataset)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Usage](#usage)
+- [API Documentation](#api-documentation)
+- [Project Structure](#project-structure)
+- [Examples](#examples)
+- [Performance](#performance)
+- [Contact](#contact)
+
+---
+
+## 🎯 Overview
+
+This project implements an **intelligent procurement data assistant** that allows users to query California state purchase records using natural language. The system uses **LangChain agents** powered by **Google Gemini AI** to automatically understand questions, select appropriate tools, and retrieve accurate data from MongoDB.
+
+### Key Capabilities
+
+- **💬 Natural Language Queries** - Ask questions in plain English
+- **🤖 Intelligent Agent** - Automatically selects the right tools
+- **📊 Data Analysis** - Statistics, aggregations, and filtering
+- **📱 Modern UI** - Responsive React interface
+
+---
+
+## ✨ Features
+
+### Frontend (React)
+- ✅ Clean, modern chat interface
+- ✅ Chat history sidebar with session management
+- ✅ Example questions to get started
+- ✅ Persistent chat sessions (localStorage)
+
+### Backend (FastAPI + LangChain)
+- ✅ RESTful API architecture
+- ✅ LangChain agent with custom tools
+- ✅ Google Gemini AI integration
+- ✅ MongoDB database integration
+- ✅ Automatic query optimization
+- ✅ CORS support for frontend
+- ✅ Health check endpoints
+
+### AI Agent Tools
+1. **`get_schema_info`** - Understands database structure
+2. **`search_database`** - Searches for specific records
+3. **`count_documents`** - Fast document counting
+4. **`aggregate_data`** - Complex aggregations (top N, grouping, sums)
 
 ---
 
 ## 🏗️ Architecture
 
 ```
-User Question
-     ↓
-┌─────────────────────┐
-│  Agent (Gemini)     │ ← Analyzes question, decides strategy
-└─────────────────────┘
-     ↓
-┌────────┴────────┐
-↓                 ↓
-┌──────────────┐  ┌──────────────┐
-│search_       │  │query_        │
-│documents     │  │database      │
-│              │  │              │
-│FAISS Vector  │  │MongoDB       │
-│Search        │  │Queries       │
-└──────────────┘  └──────────────┘
-     ↓                 ↓
-     └────────┬────────┘
-              ↓
-      Final Answer
+┌─────────────────────────────────────────────────────────────┐
+│                         USER                                │
+└────────────────────┬────────────────────────────────────────┘
+                     │
+                     ↓
+┌─────────────────────────────────────────────────────────────┐
+│              FRONTEND (React)                               │
+│  • Chat Interface                                           │
+│  • Session Management                                       │
+│  • API Communication                                        │
+└────────────────────┬────────────────────────────────────────┘
+                     │ HTTP/REST
+                     ↓
+┌─────────────────────────────────────────────────────────────┐
+│              BACKEND (FastAPI)                              │
+│  • API Endpoints (/api/query, /api/stats)                  │
+│  • Request/Response Handling                                │
+│  • CORS & Authentication                                    │
+└────────────────────┬────────────────────────────────────────┘
+                     │
+                     ↓
+┌─────────────────────────────────────────────────────────────┐
+│           LANGCHAIN AGENT (Gemini)                          │
+│  • Natural Language Understanding                           │
+│  • Tool Selection & Orchestration                           │
+│  • Response Generation                                      │
+└─────────┬─────────────────────────────────┬─────────────────┘
+          │                                 │
+          ↓                                 ↓
+┌─────────────────────┐         ┌─────────────────────────────┐
+│  CUSTOM TOOLS       │         │     GOOGLE GEMINI AI        │
+│  • search_database  │         │  • Language Model           │
+│  • count_documents  │         │  • Reasoning                │
+│  • aggregate_data   │         │  • Tool Calling             │
+│  • get_schema_info  │         └─────────────────────────────┘
+└─────────┬───────────┘
+          │
+          ↓
+┌─────────────────────────────────────────────────────────────┐
+│               DATABASE (MongoDB)                            │
+│  • 346,000+ procurement records                             │
+│  • Indexed queries                                          │
+│  • Aggregation pipelines                                    │
+└─────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠️ Technology Stack
 
-| Component | Technology | Purpose |
-|-----------|-----------|---------|
-| **LLM** | Google Gemini  | Question understanding & reasoning |
-| **Vector Store** | FAISS | Document similarity search |
-| **Database** | MongoDB | Structured data storage & queries |
-| **Framework** | LangChain | Agent orchestration & tools |
-| **Embeddings** | Google Embedding-001 | Text vectorization |
+### Frontend
+| Technology | Version | Purpose |
+|------------|---------|---------|
+| React | 18.0+ | UI Framework |
+| Axios | 1.6+ | HTTP Client |
+| CSS3 | - | Styling |
+
+### Backend
+| Technology | Version | Purpose |
+|------------|---------|---------|
+| FastAPI | 0.115.0 | API Framework |
+| LangChain | 0.3.7 | Agent Framework |
+| MongoDB | 4.0+ | Database |
+| PyMongo | 4.10.1 | MongoDB Driver |
+| Uvicorn | 0.32.0 | ASGI Server |
+
+### AI & Tools
+- **Google Gemini AI** - Natural language understanding
+- **LangChain Agents** - Tool orchestration
+- **Custom Tools** - MongoDB query tools
 
 ---
 
 ## 📊 Dataset
 
-- **Source**: [California State Purchases Dataset](https://www.kaggle.com/datasets/sohier/large-purchases-by-the-state-of-ca)
-- **Records**: 346,000+ purchase orders (2012-2015)
-- **Fields**: 30+ columns including dates, amounts, departments, suppliers, items
-- **Documents**: 
-  - DGS PURCHASING DATA DICTIONARY.pdf (field definitions)
-  - Purchase_Order_Data_Extract__2012-2015_Acquistion_Methods.docx (procedures)
+**Source**: [California State Purchases Dataset (Kaggle)](https://www.kaggle.com/datasets/sohier/large-purchases-by-the-state-of-ca)
+
+### Statistics
+- **Records**: 346,000+ purchase orders
+- **Time Period**: 2013-2015
+- **Fields**: 30+ columns
+- **Departments**: 50+
+- **Suppliers**: 5,000+
+
+### Key Fields
+- `department_name` - Purchasing department
+- `supplier_name` - Vendor/supplier
+- `total_price` - Purchase amount
+- `fiscal_year` - Fiscal year (e.g., "2014-2015")
+- `acquisition_type` - Type of acquisition
+- `purchase_date` - Date of purchase
+- `lpa_number` - Leveraged Procurement Agreement number
+- `purchase_order_number` - PO number
 
 ---
 
 ## 🚀 Installation
 
 ### Prerequisites
-
 - Python 3.9+
-- MongoDB (running locally or remote)
+- Node.js 16+
+- MongoDB 4.0+
 - Google API Key (for Gemini)
 
----
+### Step 1: Clone Repository
 
-## 💻 Usage
-
-### Interactive Mode
-
-```python
-from agent import ask_question
-
-# Ask a question
-answer = ask_question("What is an LPA Number?")
-print(answer)
+```bash
+git clone https://github.com/sughra-98/chatting_assistant_for_California_procurement.git
+cd chatting_assistant_for_California_procurement
+git checkout devlopment
 ```
 
-### Example Questions
+### Step 2: Backend Setup
 
-**Definitions:**
-```python
-ask_question("What is a requisition number?")
-ask_question("Explain acquisition methods")
-ask_question("What does fiscal year mean?")
+```bash
+cd Backend
+
+# Create virtual environment
+python -m venv venv
+
+# Activate virtual environment
+# Windows:
+venv\Scripts\activate
+# Mac/Linux:
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
 ```
 
-**Data Analysis:**
-```python
-ask_question("How many purchases were made in 2014?")
-ask_question("What are the top 5 departments by spending?")
-ask_question("Count IT vs Non-IT purchases")
+### Step 3: Frontend Setup
+
+```bash
+cd ../frontend
+
+# Install dependencies
+npm install
 ```
 
-**Combined Queries:**
-```python
-ask_question("What are acquisition types and show me statistics for each")
-ask_question("Explain LPA and count how many purchases used it")
+
+
+---
+
+## ⚙️ Configuration
+
+### Backend Configuration
+
+Create `Backend/.env`:
+
+```env
+# MongoDB Configuration
+MONGODB_URL=mongodb://localhost:27017
+MONGODB_DATABASE=california_procurement
+
+# Google Gemini Configuration
+GOOGLE_API_KEY=your_google_api_key_here
+
+
+# API Configuration
+API_HOST=0.0.0.0
+API_PORT=8000
+DEBUG=True
+
+# CORS Configuration
+ALLOWED_ORIGINS=["http://localhost:3000"]
+
+```
+
+### Get Google API Key
+
+1. Go to [Google AI Studio](https://makersuite.google.com/app/apikey)
+2. Click "Create API Key"
+3. Copy the key to your `.env` file
+
+### Frontend Configuration
+
+Update `frontend/src/services/api.js` if needed:
+
+```javascript
+const API_BASE_URL = 'http://localhost:8000';
 ```
 
 ---
 
+## 🎮 Usage
+
+### Start Backend
+
+```bash
+cd Backend
+python app/main.py
+```
+
+Expected output:
+```
+======================================================================
+🚀 Starting California Procurement Assistant API
+======================================================================
+✓ Connected to MongoDB: california_procurement
+✓ Agent initialized with 4 tools
+✓ Backend ready!
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+```
+
+### Start Frontend
+
+```bash
+cd frontend
+npm start
+```
+
+Frontend will open at: http://localhost:3000
 
 ---
 
+## 📡 API Documentation
 
+### Endpoints
 
-## 🎓 Methodology
+#### `POST /api/query`
+Process natural language query
 
-This project follows the **CRISP-DM** (Cross-Industry Standard Process for Data Mining) methodology:
+**Request**:
+```json
+{
+  "question": "How many purchases were made in 2014?"
+}
+```
 
-1. **Business Understanding** - Natural language access to procurement data
-2. **Data Understanding** - Analyzed 346K records, identified missing values
-3. **Data Preparation** - Type conversion, boolean flags, MongoDB loading
-4. **Modeling** - Built Agentic RAG with two tools
-5. **Evaluation** - Tested on various query types (95%+ accuracy)
-6. **Deployment** - Production-ready system with error handling
+**Response**:
+```json
+{
+  "answer": "There were 123,456 purchases made in fiscal year 2014-2015.",
+  "data": [...],
+  "query_info": {"filter": {"fiscal_year": "2014-2015"}},
+  "record_count": 123456,
+  "agent_steps": ["Tool: count_documents, Input: ..."]
+}
+```
+
+#### `GET /api/stats`
+Get database statistics
+
+**Response**:
+```json
+{
+  "total_records": 346000,
+  "departments": 50,
+  "suppliers": 5000,
+  "fiscal_years": ["2013-2014", "2014-2015", "2015-2016"],
+  "total_spending": 1500000000.00,
+  "date_range": {"start": "2013", "end": "2015"}
+}
+```
+
+#### `GET /api/departments`
+Get list of all departments
+
+#### `GET /api/acquisition-types`
+Get list of acquisition types
+
+#### `GET /health`
+Health check endpoint
+
+**Interactive API Docs**: http://localhost:8000/docs
 
 ---
 
-## 🧪 Key Design Decisions
+## 📁 Project Structure
 
-### Why Agentic RAG?
-
-| Approach | Can Search Docs? | Can Query DB? | Auto-Select? |
-|----------|------------------|---------------|--------------|
-| Direct LLM | ❌ | ❌ | N/A |
-| Simple RAG | ✅ | ❌ | N/A |
-| SQL Interface | ❌ | ✅ | N/A |
-| **Agentic RAG** | **✅** | **✅** | **✅** |
-
-### Why These Technologies?
-
-- **Gemini**: Long context window, native tool calling
-- **FAISS**: Fast local vector search, no external dependencies
-- **MongoDB**: Flexible schema, powerful aggregations, JSON-friendly
-- **Cosine Similarity**: Measures semantic meaning, not text length
-
-### Data Handling
-
-- **Missing Values**: Added boolean flags (`has_lpa_number`) instead of dropping columns
-- **Type Conversion**: Proper dtypes (datetime, float, category) for efficiency
-- **Indexing**: Strategic indexes on frequently queried fields
+```
+chatting_assistant_for_California_procurement/
+├── Backend/
+│   ├── app/
+│   │   ├── __init__.py
+│   │   ├── main.py              # FastAPI application
+│   │   ├── config.py            # Configuration
+│   │   ├── database/
+│   │   │   ├── __init__.py
+│   │   │   └── mongodb.py       # MongoDB connection
+│   │   ├── models/
+│   │   │   ├── __init__.py
+│   │   │   └── schemas.py       # Pydantic models
+│   │   ├── agents/
+│   │   │   ├── __init__.py
+│   │   │   ├── tools.py         # LangChain tools
+│   │   │   └── agent.py         # Agent setup
+│   │   ├── routers/
+│   │   │   ├── __init__.py
+│   │   │   ├── query.py         # Query endpoints
+│   │   │   └── stats.py         # Statistics endpoints
+│   │   └── utils/
+│   ├── .env                     # Environment variables
+│   ├── requirements.txt
+│   └── README.md
+│
+├── frontend/
+│   ├── public/
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── Header/
+│   │   │   ├── Sidebar/
+│   │   │   ├── Body/
+│   │   │   ├── MessageBubble/
+│   │   │   ├── InputArea/
+│   │   │   └── ExampleQuestions/
+│   │   │   └── TypingIndicator/
+│   │   ├── services/
+│   │   │   └── api.js           # API client
+│   │   ├── App.js
+│   │   └── App.css
+│   ├── package.json
+│   └── README.md
+│
+└── README.md                    # This file
+```
 
 ---
 
-## 📈 Performance
+## 💡 Examples
 
-- **Response Time**: <2 seconds for most queries
+### Simple Queries
+
+```
+Q: How many purchases were made in 2014?
+A: There were 123,456 purchases made in fiscal year 2014-2015.
+
+Q: What is the total spending in 2015?
+A: The total spending in fiscal year 2015-2016 was $845,234,567.89.
+```
+![Simple Queries ](image.png)
+
+![Full Report](image-1.png)
+
+
+### Complex Aggregations
+
+```
+Q: What are the top 5 departments by spending?
+A: The top 5 departments by spending are:
+   1. Technology Services - $234M
+   2. Health Services - $189M
+   3. Transportation - $156M
+   4. Education - $134M
+   5. Public Safety - $98M
+
+Q: Show IT purchases over $10,000
+A: Found 2,345 IT purchases over $10,000. Here are some examples:
+   - Tech Corp: $45,000 for servers
+   - Software Inc: $25,000 for licenses
+   ...
+```
+
+### Filtered Searches
+
+```
+Q: Find purchases from Technology Services in 2014
+A: Found 5,678 purchases from Technology Services in fiscal year 2014-2015.
+
+Q: How many LPA contracts were used?
+A: There were 92,347 purchases that used LPA (Leveraged Procurement Agreement) contracts.
+```
+
+---
+
+## ⚡ Performance
+
+- **Response Time**: <10 seconds for most queries , <1.5 min for the full Report 
 - **Accuracy**: 95%+ on test questions
-- **Scale**: Handles 346,000+ records efficiently
-- **Memory**: ~500MB with optimized data types
+- **Database Size**: 346,000+ records
 
 ---
 
-## 🔮 Future Enhancements
+## 🧪 Testing
 
-- [ ] Web UI with Streamlit
-- [ ] Export results to Excel/PDF
-- [ ] Multi-turn conversations with context
-- [ ] Additional tools (email reports, visualizations)
+### Test Backend API
+
+```bash
+# Health check
+curl http://localhost:8000/health
+
+# Test query
+curl -X POST http://localhost:8000/api/query \
+  -H "Content-Type: application/json" \
+  -d '{"question": "How many purchases in 2014?"}'
+
+# Get statistics
+curl http://localhost:8000/api/stats
+```
+
+### Test Frontend
+
+1. Open http://localhost:3000
+2. Try example questions
+3. Test chat history
+4. Test new chat creation
 
 ---
 
-## 🤝 Contributing
-
-Contributions are welcome! Please:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
----
 
 
-
-## 👤 Author
+## 👩‍💻 Contact
 
 **Sughra**
 
@@ -220,17 +476,39 @@ Contributions are welcome! Please:
 
 ## 🙏 Acknowledgments
 
-- Dataset: [California State Purchases (Kaggle)](https://www.kaggle.com/datasets/sohier/large-purchases-by-the-state-of-ca)
-- LangChain Documentation
-- Google Gemini API
-- MongoDB Documentation
+- **Dataset**: [California State Purchases (Kaggle)](https://www.kaggle.com/datasets/sohier/large-purchases-by-the-state-of-ca)
+- **LangChain**: Framework for building agents
+- **Google Gemini**: AI language model
+- **MongoDB**: Database platform
+- **FastAPI**: Modern Python web framework
+- **React**: UI library
 
 ---
 
-## 📧 Contact
+## 📚 Resources
 
-For questions or feedback, please open an issue on GitHub.
+- [FastAPI Documentation](https://fastapi.tiangolo.com/)
+- [LangChain Documentation](https://python.langchain.com/)
+- [Google Gemini API](https://ai.google.dev/)
+- [MongoDB Documentation](https://docs.mongodb.com/)
+- [React Documentation](https://reactjs.org/)
+
+---
+
+## 🔮 Future Enhancements
+
+- [ ] Export results to Excel/PDF
+- [ ] Data visualizations and charts
+- [ ] Advanced filtering options
+- [ ] User authentication
+- [ ] Query history analytics
+- [ ] Real-time notifications
+- [ ] Mobile app (React Native)
 
 ---
 
 **⭐ If you find this project helpful, please give it a star!**
+
+---
+
+*Built with ❤️ by Sughra*
